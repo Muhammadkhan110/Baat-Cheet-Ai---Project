@@ -1,0 +1,33 @@
+import { Router } from "express";
+import { ONBOARDING_QUESTIONS, getWelcomeMessage, buildSystemPrompt } from "./onboarding";
+import { sendWhatsAppMessage, callLLM } from "./whatsapp";
+
+const router = Router();
+
+// WHATSAPP WEBHOOK (Verification)
+router.get("/webhook/whatsapp", (req, res) => {
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+  if (mode === "subscribe" && token === "baatcheet_verify_2025") {
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+// WHATSAPP WEBHOOK (Handling Messages)
+router.post("/webhook/whatsapp", async (req, res) => {
+  res.status(200).send("OK");
+  const message = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+  if (!message || !message.text) return;
+
+  const senderPhone = message.from;
+  const messageText = message.text.body;
+
+  // For now, we assume everyone starts with welcome message
+  // In a real DB setup, you'd check the 'schema.ts' data here
+  await sendWhatsAppMessage(senderPhone, getWelcomeMessage());
+});
+
+export default router;
