@@ -1,0 +1,16 @@
+export const ONBOARDING_QUESTIONS = [
+  "Aapki business ka naam aur location kya hai? (Jaise: Ali Medical Store, Lahore)",
+  "Aap kya products ya services sell karte hain aur unki prices kya hain?",
+  "Aapka target customer kaun hai?",
+  "Aapki office timings kya hain?",
+  "Aap is bot se kya goal achieve karna chahte hain?",
+];
+
+export function getWelcomeMessage() {
+  return "Assalam o Alaikum! BaatCheet AI mein khush aamdeed! 5 sawaalon ke jawab dein.\n\n" +
+         "*Sawaal 1/5:*\n" + ONBOARDING_QUESTIONS[0];
+}
+
+export function buildSystemPrompt(businessName: string) {
+  return `Aap ${businessName} ke AI assistant hain. Hamesha Roman Urdu mein jawab dein. Professional aur helpful rahein.`;
+}
